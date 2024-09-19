@@ -4,7 +4,7 @@ pipeline {
     // Definir las variables de entorno
     environment {
         REPO_URL = 'https://github.com/luis2678/producto2_cloudops.git' // URL del repositorio
-        BRANCH = 'principal' // Rama de despliegue
+        BRANCH = 'main' // Rama de despliegue
         DOCKER_IMAGE = 'mi-aplicacion-go' // Nombre de la imagen Docker
         DOCKER_PORT = '8080:8080' // Mapeo de puertos Docker
     }
