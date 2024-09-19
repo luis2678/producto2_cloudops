@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+
+    // Definir las variables de entorno
+    environment {
+        REPO_URL = 'https://github.com/luis2678/producto2_cloudops.git' // URL del repositorio
+        BRANCH = 'principal' // Rama de despliegue
+        DOCKER_IMAGE = 'mi-aplicacion-go' // Nombre de la imagen Docker
+        DOCKER_PORT = '8080:8080' // Mapeo de puertos Docker
+    }
+
+    stages {
+        // Etapa para clonar el repositorio
+        stage('Clonar repositorio') {
+            steps {
+                git branch: "${BRANCH}", url: "${REPO_URL}"
+            }
+        }
+
+        // Etapa para construir la imagen Docker
+        stage('Construir imagen Docker') {
+            steps {
+                script {
+                    dockerImage = docker.build("${DOCKER_IMAGE}")
+                }
+            }
+        }
+
+        // Etapa para detener el contenedor anterior (si existe) y desplegar el nuevo
+        stage('Desplegar contenedor Docker') {
+            steps {
+                script {
+                    // Detiene el contenedor anterior si está corriendo
+                    sh """
+                    docker stop ${DOCKER_IMAGE} || true
+                    docker rm ${DOCKER_IMAGE} || true
+                    """
+
+                    // Ejecuta el nuevo contenedor Docker
+                    sh """
+                    docker run -d --name ${DOCKER_IMAGE} -p ${DOCKER_PORT} ${DOCKER_IMAGE}
+                    """
+                }
+            }
+        }
+    }
+
+    // Acciones después del pipeline (post-pipeline actions)
+    post {
+        always {
+            echo 'Pipeline completado, limpiando recursos...'
+        }
+
+        success {
+            echo '¡Despliegue completado con éxito!'
+        }
+
+        failure {
+            echo 'El despliegue ha fallado. Revisa los logs de Jenkins para más información.'
+        }
+    }
+}
