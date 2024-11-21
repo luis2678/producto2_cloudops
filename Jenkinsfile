@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                // Comandos para construir tu aplicación, como el build de Docker
+                
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                // Aquí podrías agregar comandos de prueba como tests unitarios
+                // Si tienes tests en tu aplicación, agrégalos aquí
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                // Comandos para desplegar tu aplicación usando Docker en EC2
+                
+            }
+        }
+    }
+}
